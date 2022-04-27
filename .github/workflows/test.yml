@@ -1,0 +1,57 @@
+name: 'Central log Account Network Role creation'
+
+on:
+  push:
+    branches:
+    - main
+    paths:
+      - .github/workflows/test.yml
+      - s3bucket/**
+
+jobs:
+  terraform:
+    name: 'Terraform'
+    runs-on: ubuntu-latest
+    environment: test
+    
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+    # AWS configure--------
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@master
+      with:
+        role-to-assume: arn:aws:iam::812498273566:role/s3role
+        aws-region: us-east-1
+        
+    # Checkout the repository to the GitHub Actions runner
+    - name: Checkout
+      uses: actions/checkout@v2
+        
+    # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: 0.14
+
+    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+    - name: Terraform Init
+      run: terraform init
+      working-directory: ./s3bucket
+
+    # Generates an execution plan for Terraform
+    - name: Terraform Plan
+      run: terraform plan
+      working-directory: ./s3bucket
+
+      # Executes Terraform Apply
+    - name: Terraform Apply
+      run: terraform apply -auto-approve
+      working-directory: ./s3bucket
+
+      # Executes Terraform destroy
+    #- name: Terraform Destroy
+    #  run: terraform destroy -auto-approve 
+    #  working-directory: ./s3bucket
