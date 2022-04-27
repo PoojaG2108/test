@@ -1,31 +1,19 @@
 name: "Action AWS OIDC Auth"
-description: "Uses a multi-step process to enforce arbitrary claims on a GitHub OIDC token"
 
 on:
   push:
     branches:
     - main
 
-inputs:
-    initial-role-to-assume:
-        description: "Initial role to assume with GitHub OIDC identity provider"
-        required: true
-        default: "arn:aws:iam::686366197843:role/github-oidc-role"
-    aws-region:
-        description: "Aws region in which to run commands"
-        required: false
-        default: "us-east-1"
-    lambda-function-name:
-        description: "Name of lambda function to invoke for custom claim validation"
-        required: true
-runs:
-    using: "composite"
+jobs:
+  OIDC:
+    runs-on: ubuntu-latest
     steps:
         - name: AWS OIDC Auth
           uses: aws-actions/configure-aws-credentials@v1
           with:
-              role-to-assume: ${{ inputs.initial-role-to-assume }}
-              aws-region: ${{ inputs.aws-region }}
+              role-to-assume: "arn:aws:iam::686366197843:role/github-oidc-role"
+              aws-region: "us-east-1"
         - name: Get ID Token
           id: get-token
           uses: actions/github-script@v6
@@ -37,7 +25,7 @@ runs:
               result-encoding: string
         - name: Invoke auth lambda
           run: |
-              aws lambda invoke --function-name ${{ inputs.lambda-function-name }} \
+              aws lambda invoke --function-name github-oidc-auth \
                 --cli-binary-format raw-in-base64-out \
                 --payload '${{ steps.get-token.outputs.result }}' \
                 $RUNNER_TEMP/response.json
