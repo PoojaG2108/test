@@ -1,6 +1,6 @@
 name: "Action AWS OIDC Auth"
 on:
- workflow_dispatch:
+ workflow_dispatch: 
     
   inputs:
     initial-role-to-assume:
