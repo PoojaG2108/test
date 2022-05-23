@@ -7,8 +7,6 @@ on:
       - .github/workflows/test.yml
       - environments/vpc/**
 
- workflow_dispatch: 
-
 jobs:
    call-workflow:
        uses: PoojaG2108/data/.github/workflows/data.yml@main
