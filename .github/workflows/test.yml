@@ -8,6 +8,6 @@ jobs:
        uses: PoojaG2108/data/.github/workflows/data.yml@main
        with:
           workingdirectory: ./environments/vpc
-          initial-role-to-assume: arn:aws:iam::972295139066:role/github-oidc-role
+          initial-role-to-assume: arn:aws:iam::972295139066:role/github-oidc-role2
           aws-region: us-east-1
-          lambda-function-name: github-oidc-auth
+          lambda-function-name: github-oidc-auth2
