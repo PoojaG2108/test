@@ -1,4 +1,4 @@
-name: CI
+name: 972295139066github-actions-role2
 on:
 
  workflow_dispatch: 
